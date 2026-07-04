@@ -1,0 +1,1 @@
+A sudoku game that comprises of 100 squares on a board. The aim of the user is to complete the numbers on the board such that every row and column has 0 to 9 in no particular order. Building the backtracking algorithms, hence displaying competency to break down complex data structures and algorithms to solve real-world problems.
