@@ -38,30 +38,30 @@ export function shuffle(nums){
     return nums;
 }
 
-export function solve(board){
-    for (let row=0; row<9; row++){
-        for(let col=0; col<9; col++){
-            if (board[row][col] === 0){
-                const numbers = shuffle([1,2,3,4,5,6,7,8,9]);
+// export function solve(board){
+//     for (let row=0; row<9; row++){
+//         for(let col=0; col<9; col++){
+//             if (board[row][col] === 0){
+//                 const numbers = shuffle([1,2,3,4,5,6,7,8,9]);
 
-                for(const num of numbers){
-                    if (isValid(board,row,col,num)){
-                        board[row][col] = num;
+//                 for(const num of numbers){
+//                     if (isValid(board,row,col,num)){
+//                         board[row][col] = num;
 
-                        if(solve(board))
-                            return true;
+//                         if(solve(board))
+//                             return true;
 
-                        board[row][col] = 0;
-                    }
-                }
+//                         board[row][col] = 0;
+//                     }
+//                 }
 
-                return false;
-            }
-        }
-    }
+//                 return false;
+//             }
+//         }
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 export function generateSolvedBoard(){
     const board = createEmptyBoard();
