@@ -17,7 +17,7 @@ export function isValid(board, row, col, num) {
 
     //3x3 Box
     const startRow = row - (row % 3);
-    const startCol = row - (col % 3);
+    const startCol = col - (col % 3);
 
     for (let r=0; r<3; r++){
         for(let c=0; c<3; c++){
@@ -66,6 +66,10 @@ export function solve(board){
 export function generateSolvedBoard(){
     const board = createEmptyBoard();
 
-    solve(board);
+    for(let r=0; r<9; r++){
+        for(let c=0; c<9; c++){
+            board[r][c] = ((r * 3 + Math.floor(r/3) + c) % 9) + 1;
+        }
+    }
     return board;
 }

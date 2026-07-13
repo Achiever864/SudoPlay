@@ -30,12 +30,12 @@ export function swapNumbers(board){
 export function swapRows(board){
     const band = Math.floor(Math.random() * 3);
     const row1 = band * 3 + Math.floor(Math.random() * 3);
-    const row2 = band * 3 + Math.floor(Math.random() * 3);
+    let row2 = band * 3 + Math.floor(Math.random() * 3);
 
     while(row1 === row2)
         row2 = band * 3 + Math.floor(Math.random() * 3);
 
-    [board[row1],, board[row2]] = [board[row2], board[row1]];
+    [board[row1], board[row2]] = [board[row2], board[row1]];
 
     return board;
 }

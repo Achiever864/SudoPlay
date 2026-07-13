@@ -1,10 +1,11 @@
 import { generateSolvedBoard } from "./sudoku.js";
+import { randomize } from "./randomizer.js";
 
 let templateBoard = null;
 
 export function initializeTemplate() {
     if(!templateBoard) {
-        templateBoard = generateSolvedBoard();
+        templateBoard = randomize(generateSolvedBoard());
         console.log('Sudoku template generated');
     }
 }
