@@ -1,18 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-// ------------------------------------------------------------------
-// Username Modal — collects a display name before the leaderboard
-// can record a run. Import and render at the top of any page that
-// needs to capture a player's leaderboard identity.
-//
-// Usage:
-//   <UsernameModal
-//       isOpen={isUsernameModalOpen}
-//       onSubmit={(name) => { ...save it... }}
-//       initialValue={username ?? ""}
-//   />
-// ------------------------------------------------------------------
-
 interface UsernameModalProps {
     isOpen: boolean;
     onSubmit: (name: string) => void;
@@ -59,7 +46,6 @@ export default function UsernameModal({
                 onSubmit={handleSubmit}
                 className="w-full max-w-sm bg-slate-800 border border-slate-700/60 rounded-2xl shadow-2xl p-6 sm:p-7 relative animate-[fadeIn_150ms_ease-out]"
             >
-                {/* Accent glow */}
                 <div className="absolute -top-px left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
 
                 <h2

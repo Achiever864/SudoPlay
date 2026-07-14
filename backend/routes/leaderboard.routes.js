@@ -10,7 +10,7 @@ import {
 } from "../controllers/Leaderboard.controller.js";
 
 const router = express.Router();
-router.post("/", submitScore);
+router.post("/submit", submitScore);
 router.get("/", getGlobalLeaderboard);
 router.get("/me", getMyHistory);
 router.get('/me/stats', getMyStats);

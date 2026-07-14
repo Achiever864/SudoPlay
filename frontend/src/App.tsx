@@ -1,16 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LeaderboardPage from "./pages/LeaderboarPage";
-import SudokuPage from "./pages/SudokuPage";
+import AppShell from "./AppShell";
 
-function App(){
-  return(
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<SudokuPage />} />
-        <Route path="/leaderboard" element={<LeaderboardPage />} />
-      </Routes>
-    </BrowserRouter>
-  );
+function App() {
+  return <AppShell />;
 }
 
 export default App;

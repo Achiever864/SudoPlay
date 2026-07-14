@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import UsernameModal from "../component/userName.tsx";
+import { useState, useEffect, useCallback } from "react";
+import UsernameModal from "../component/UsernameModal.tsx";
 
 const USERNAME_STORAGE_KEY = "sudoku_username";
 const MAX_ERRORS = 3;
