@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSettings } from "../context/SettingsContext";
+import GuestNudge from "../component/GuestNudge";
 import API from "../api/axios";
 
 const MAX_ERRORS = 3;
@@ -21,13 +22,9 @@ export default function PlayTab() {
 
     const [grid, setGrid] = useState<Cell[]>(Array(81).fill(null));
     const [initialIndices, setInitialIndices] = useState<number[]>([]);
-    // NOTE: the original SudokuPage referenced an undefined `SOLUTION`
-    // constant and an undefined `buildInitialGrid()` — leftovers from
-    // before puzzles were fetched from the backend. Fixing that here by
-    // keeping the solution returned from /api/sudoku/new in state, since
-    // that's what win-checking and error-checking actually need. Flagging
-    // this explicitly rather than quietly changing behavior.
     const [solution, setSolution] = useState<Cell[]>(Array(81).fill(null));
+    
+    const [puzzleId, setPuzzleId] = useState<string | null>(null);
 
     const [puzzleLoading, setPuzzleLoading] = useState(true);
     const [puzzleError, setPuzzleError] = useState<string | null>(null);
@@ -47,18 +44,21 @@ export default function PlayTab() {
         setPuzzleLoading(true);
         setPuzzleError(null);
         try {
-            const res = await API.get("/game/start?difficulty=medium");
+        
+            console.log("You can't see me.")
+            const res = await API.get(`/game/start?difficulty=${difficulty}`);
+            const data = res.data;
+            console.log("Data hehe boy:", data);
 
-            if (!res.ok) throw new Error("Failed to fetch puzzle");
-
-            const data = await res.json();
             const flatGrid = fromBoard(data.puzzle);
             const filled = flatGrid.map((v, i) => (v !== null ? i : -1)).filter((i) => i !== -1);
 
             setGrid(flatGrid);
             setInitialIndices(filled);
-            console.log("data solution:", data);
             setSolution(data.solvedBoard ? fromBoard(data.solvedBoard) : Array(81).fill(null));
+            
+
+            setPuzzleId(data.puzzleId);
 
             setSelectedCell(null);
             setIsWon(false);
@@ -72,20 +72,23 @@ export default function PlayTab() {
         }
     }, [difficulty]);
 
-    const handleWin = async () => {
-        try {
-            const res = await API.post("/leaderboard/submit",{
-                puzzleId,
-                difficulty,
-                timeTaken,
-                mistakes,
-                hintsUsed,
-                score
-            })
-        } catch (error) {
-            
-        }
-    }
+    const handleWin = useCallback(
+        async (timeTaken: number, mistakes: number) => {
+            try {
+                await API.post("/leaderboard/submit", {
+                    puzzleId,
+                    difficulty,
+                    timeTaken,
+                    mistakes,
+                    hintsUsed: 0, 
+                    score: Math.max(0, 1000 - timeTaken - mistakes * 50), //remeber to sort this out when you start using real scoring technique... lol
+                });
+            } catch (error) {
+                console.error("Failed to submit leaderboard entry:", error);
+            }
+        },
+        [puzzleId, difficulty]
+    );
 
     useEffect(() => {
         fetchPuzzle();
@@ -93,6 +96,7 @@ export default function PlayTab() {
         // rather not interrupt an in-progress round, gate this behind a
         // confirmation in SettingsDrawer instead of firing automatically.
         // eslint-disable-next-line react-hooks/exhaustive-deps
+        //ok
     }, [difficulty]);
 
     useEffect(() => {
@@ -108,7 +112,6 @@ export default function PlayTab() {
             if (selectedCell === null) return;
             if (initialIndices.includes(selectedCell)) return;
             if (!isRoundActive) return;
-            //console.log(solution); solution is null at this point
 
             if (num !== null && num !== solution[selectedCell]) {
                 setErrorCount((prev) => {
@@ -133,9 +136,13 @@ export default function PlayTab() {
         if (!isComplete) return;
 
         const isCorrect = grid.every((cell, i) => cell === solution[i]);
-        if (isCorrect) setIsWon(true);
-        handleWin();
-    }, [grid, isWon, isGameOver, solution]);
+        if (isCorrect) {
+            setIsWon(true);
+            // Only submit on an actual correct solve — this used to fire
+            // unconditionally whenever the grid filled up, win or not.
+            handleWin(elapsedSeconds, errorCount);
+        }
+    }, [grid, isWon, isGameOver, solution, handleWin, elapsedSeconds, errorCount]);
 
     const handleReset = () => {
         fetchPuzzle();
@@ -181,9 +188,14 @@ export default function PlayTab() {
                             Solved!
                         </h2>
                         <p className="text-sm text-slate-400 mt-2">You completed the puzzle.</p>
+
+                        <div className="mt-4">
+                            <GuestNudge message="Create an account to save this win and show up on the leaderboard." />
+                        </div>
+
                         <button
                             onClick={handleReset}
-                            className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 font-bold uppercase tracking-wider text-slate-900 transition"
+                            className="mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 font-bold uppercase tracking-wider text-slate-900 transition"
                         >
                             Play again
                         </button>

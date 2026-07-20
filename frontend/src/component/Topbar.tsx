@@ -1,6 +1,7 @@
 import React from "react";
 import { useUser } from "../context/UserContext";
 import { useSettings } from "../context/SettingsContext";
+import { useAuth } from "../context/AuthContext";
 
 export type Tab = "play" | "leaderboard" | "profile";
 
@@ -13,6 +14,7 @@ const TAB_LABELS: Record<Tab, string> = {
 export default function TopBar({ activeTab }: { activeTab: Tab }) {
     const { username, openUsernameModal } = useUser();
     const { openSettings } = useSettings();
+    const { isAuthenticated, openAuthModal } = useAuth();
 
     return (
         <header className="w-full max-w-lg flex items-center justify-between px-1 mb-6">
@@ -21,6 +23,16 @@ export default function TopBar({ activeTab }: { activeTab: Tab }) {
             </h1>
 
             <div className="flex items-center gap-3">
+                {/* Subtle, easy to ignore — never a modal that blocks the page */}
+                {!isAuthenticated && (
+                    <button
+                        onClick={() => openAuthModal("login")}
+                        className="text-xs font-semibold text-slate-400 hover:text-cyan-400 transition"
+                    >
+                        Sign in
+                    </button>
+                )}
+
                 {username && (
                     <button
                         onClick={openUsernameModal}

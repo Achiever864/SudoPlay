@@ -4,7 +4,7 @@
 // get Profile
 import User from "../models/User.model.js";
 import jwt from "jsonwebtoken";
-import bcryptjs from "'bcryptjs";
+import bcryptjs from "bcryptjs";
 
 //helper function
 const generateGuestUsername = async () => {
@@ -24,24 +24,36 @@ const generateGuestUsername = async () => {
 
 const createGuestUser = async (req, res) => {
     try{
-        const randomNumber = await generateGuestUsername();
+        const username = await generateGuestUsername();
+
         const user = await User.create({
-            username,
-            isGuest: true
+            username
         })
         
+        const token = jwt.sign(
+            {
+                id: user._id
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "15d"
+            }
+        );
+
         return res.status(201).json({
             message: "Guest user created successfully",
-            user
+            user,
+            token
         })
     } catch(error){
+        console.error("error:", error);
         res.status(500).json({
             message: "Unable to create guest user!"
         })
     }
 };
 
-const registerGuestUer = async(req, res) => {
+const registerGuestUser = async(req, res) => {
     try {
         const userId = req.user.id;
 
@@ -51,7 +63,7 @@ const registerGuestUer = async(req, res) => {
             password
         } = req.body;
 
-        if (!username || !token || !password){
+        if (!username || !email || !password){
             return res.status(400).json({
                 success: false,
                 message: "Must provide username, email and password."
@@ -75,16 +87,18 @@ const registerGuestUer = async(req, res) => {
         }
 
         //username already taken...?
-        const usernameExists = await User.findOne({ username });
-        if(usernameExists){
-            return res.status(409).json({
-                message: "Username already exists",
-                success: false
-            })
-        };
+        if (username !== user.username) {
+            const usernameExists = await User.findOne({ username });
+            if(usernameExists){
+                return res.status(409).json({
+                    message: "Username already exists",
+                    success: false
+                })
+            };
+        }
 
         //Email already taken?
-        const emailExists = await User.findOne({ email });
+        const emailExists = await User.findOne({ email: email.toLowerCase() });
 
         if (emailExists){
             return res.status(409).json({
@@ -93,7 +107,7 @@ const registerGuestUer = async(req, res) => {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcryptjs.hash(password, 10);
         user.username = username;
         user.email = email.toLowerCase();
         user.password = hashedPassword;
@@ -104,7 +118,7 @@ const registerGuestUer = async(req, res) => {
         //generate fresh JWT
         const token = jwt.sign(
             {
-                id: User._id
+                id: user._id
             },
             process.env.JWT_SECRET,
             {
@@ -154,8 +168,8 @@ const loginUser = async (req, res) => {
         }
 
         //compare passwords
-        const isMatch = await bcrypt.compare(
-            passsword,
+        const isMatch = await bcryptjs.compare(
+            password,
             user.password
         );
 
@@ -222,7 +236,7 @@ const getProfile = async(req, res) => {
 };
 
 export {
-    registerGuestUer,
+    registerGuestUser,
     createGuestUser,
     loginUser,
     getProfile

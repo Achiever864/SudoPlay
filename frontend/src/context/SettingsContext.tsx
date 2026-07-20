@@ -16,9 +16,9 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 export function SettingsProvider({ children }: { children: React.ReactNode}){
     const [difficulty, setDifficultyState] = useState<Difficulty>(() => {
         try {
-            return (window.localStorage.getItem(DIFFICULTY_STORAGE_KEY) as Difficulty) ?? "medium";
+            return (window.localStorage.getItem(DIFFICULTY_STORAGE_KEY) as Difficulty) ?? "easy";
         } catch {
-            return "medium";
+            return "easy";
         }
     });
 

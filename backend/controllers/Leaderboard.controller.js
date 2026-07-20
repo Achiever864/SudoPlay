@@ -4,6 +4,7 @@ const submitScore = async (req, res) => {
     try {
         const userId = req.user.id;
         const {
+            puzzleId,
             difficulty,
             timeTaken,
             mistakes,
@@ -24,7 +25,7 @@ const submitScore = async (req, res) => {
         }
 
         const leaderboardEntry = await Leaderboard.create({
-            user: user.req.id,
+            user: req.user.id,
             puzzleId,
             difficulty,
             timeTaken,

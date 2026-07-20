@@ -9,11 +9,6 @@ const leaderboardSchema = new mongoose.Schema(
             index: true,
         },
 
-        puzzleId: {
-            type: String,
-            required: true
-        },
-
         difficulty: {
             type: String,
             enum: ["easy", "medium", "hard", "expert"],

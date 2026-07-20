@@ -1,25 +1,32 @@
 import React, { useState } from "react";
-import { UserProvider, useUser } from "./context/UserContext.tsx";
-import { SettingsProvider } from "./context/SettingsContext.tsx";
-import { ThemeProvider } from "./context/ThemeContext.tsx";
-import TopBar, { type Tab } from "./component/Topbar.tsx";
-import BottomTabBar from "./component/BottomTabBar.tsx";
-import SettingsDrawer from "./component/SettingsDrawer.tsx";
-import UsernameModal from "./component/UsernameModal.tsx";
-import PlayTab from "./pages/PlayTab.tsx";
-import LeaderboardTab from "./pages/LeaderboardTab.js";
-import ProfileTab from "./pages/ProfileTab.tsx";
+import { UserProvider, useUser } from "./context/UserContext";
+import { SettingsProvider } from "./context/SettingsContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
+import TopBar, { type Tab } from "./component/Topbar";
+import BottomTabBar from "./component/BottomTabBar";
+import SettingsDrawer from "./component/SettingsDrawer";
+import UsernameModal from "./component/UsernameModal";
+import AuthModal from "./component/AuthModal";
+import PlayTab from "./pages/PlayTab";
+import LeaderboardTab from "./pages/LeaderboardTab";
+import ProfileTab from "./pages/ProfileTab";
 
 function ShellContent() {
     const [activeTab, setActiveTab] = useState<Tab>("play");
     const { isUsernameModalOpen, submitUsername, username } = useUser();
 
-    return(
+    return (
         <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center p-4 pb-24 sm:pb-4 antialiased">
             <UsernameModal isOpen={isUsernameModalOpen} onSubmit={submitUsername} initialValue={username ?? ""} />
             <SettingsDrawer />
+            <AuthModal />
 
             <TopBar activeTab={activeTab} />
+
+            {/* Play stays mounted (just hidden) when you switch tabs, so the
+                board and timer survive a glance at the leaderboard instead
+                of resetting. Leaderboard/Profile are cheap to remount. */}
             <div className="w-full flex flex-col items-center flex-1">
                 <div className={activeTab === "play" ? "contents" : "hidden"}>
                     <PlayTab />
@@ -33,14 +40,16 @@ function ShellContent() {
     );
 }
 
-export default function AppShell(){
-    return(
+export default function AppShell() {
+    return (
         <ThemeProvider>
             <SettingsProvider>
-                <UserProvider>
-                    <ShellContent />
-                </UserProvider>
+                <AuthProvider>
+                    <UserProvider>
+                        <ShellContent />
+                    </UserProvider>
+                </AuthProvider>
             </SettingsProvider>
         </ThemeProvider>
     );
-};
+}

@@ -6,11 +6,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+
     email: {
         type: String,
         unique: true,
         sparse: true
     },
+
     password: {
         type: String
     },
@@ -20,14 +22,14 @@ const userSchema = new mongoose.Schema({
         default: true
     },
 
+    guestId: {
+        type: String,
+        default: Date.now()
+    },
+
     avatar: {
         type: String,
         default: ""
-    },
-
-    guestId: {
-        type: String,
-        unique: true
     },
 
     totalScore: {

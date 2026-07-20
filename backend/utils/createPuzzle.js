@@ -2,7 +2,7 @@ export function createPuzzle(board,difficulty){
     let cellsToRemove;
 
     switch(difficulty){
-        case "easy": cellsToRemove =35; break;
+        case "easy": cellsToRemove =2; break;
         case "medium": cellsToRemove = 45; break;
         case "hard" : cellsToRemove = 55; break;
         case "expert" : cellsToRemove = 62; break;

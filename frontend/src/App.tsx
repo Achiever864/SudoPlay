@@ -1,4 +1,4 @@
-import AppShell from "./AppShell";
+import AppShell from "./Appshell.tsx";
 
 function App() {
   return <AppShell />;

@@ -1,4 +1,5 @@
 import express from "express";
+import { protect } from "../middleware/auth.middleware.js";
 
 import {
     submitScore,
@@ -10,11 +11,11 @@ import {
 } from "../controllers/Leaderboard.controller.js";
 
 const router = express.Router();
-router.post("/submit", submitScore);
-router.get("/", getGlobalLeaderboard);
-router.get("/me", getMyHistory);
-router.get('/me/stats', getMyStats);
-router.get("/rank/me", getMyRank);
-router.get("/:difficulty", getDifficultyLeaderboard);
+router.post("/submit", protect, submitScore);
+router.get("/", protect, getGlobalLeaderboard);
+router.get("/me", protect, getMyHistory);
+router.get('/me/stats', protect, getMyStats);
+router.get("/rank/me", protect, getMyRank);
+router.get("/:difficulty", protect, getDifficultyLeaderboard);
 
 export default router;

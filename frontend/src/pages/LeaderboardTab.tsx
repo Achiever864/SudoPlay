@@ -12,13 +12,13 @@ interface LeaderboardEntry {
 export default function LeaderboardTab() {
     const [scope, setScope] = useState<"global" | "regional">("global");
 
-    // Static mock data for now — swap for a real fetch once the
-    // leaderboard endpoint exists.
+
     const globalData: LeaderboardEntry[] = [
         { rank: 1, username: "SudokuPage", time: "02:14", xp: 4850, solvedCount: 142 },
         { rank: 2, username: "MatrixSolver", time: "02:35", xp: 4610, solvedCount: 128 },
         { rank: 3, username: "BitShift", time: "02:41", xp: 4300, solvedCount: 119 },
         { rank: 4, username: "CyberCell", time: "03:02", xp: 3950, solvedCount: 150 },
+        { rank: 5, username: "AchieverJr", time: "05:55", xp: 3432343, solvedCount: 100}
     ];
 
     const regionalData: LeaderboardEntry[] = [

@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-
-const USERNAME_STORAGE_KEY = "sudoku_username";
+import React, { createContext, useContext, useState } from "react";
+import { useAuth } from "./AuthContext";
+import API from "../api/axios";
 
 interface UserContextValue {
     username: string | null;
@@ -12,28 +12,17 @@ interface UserContextValue {
 const UserContext = createContext<UserContextValue | null>(null);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-    const [username, setUsername] = useState<string | null>(null);
+    const { user } = useAuth();
     const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
 
-    useEffect(() => {
-        try {
-            const stored = window.localStorage.getItem(USERNAME_STORAGE_KEY);
-            if (stored) {
-                setUsername(stored);
-            } else {
-                setIsUsernameModalOpen(true);
-            }
-        } catch {
-            setIsUsernameModalOpen(true);
-        }
-    }, []);
+    // Now username comes straight from the backend via AuthContext
+    const username = user?.username ?? null;
 
-    const submitUsername = (name: string) => {
-        setUsername(name);
+    const submitUsername = async (name: string) => {
+        //duhh
         setIsUsernameModalOpen(false);
         try {
-            window.localStorage.setItem(USERNAME_STORAGE_KEY, name); //well we actually want to create guest user at the backend like shey you get?
-            
+            //omor...still working here
         } catch {
             //duhhh....
         }

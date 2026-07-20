@@ -1,5 +1,6 @@
-import React from "react";
 import { useUser } from "../context/UserContext";
+import { useAuth } from "../context/AuthContext";
+import GuestNudge from "../component/GuestNudge";
 
 function StatTile({ label, value }: { label: string; value: string }) {
     return (
@@ -16,9 +17,7 @@ interface Achievement {
     unlocked: boolean;
 }
 
-// Placeholder data — wire this up to a real /api/profile/:username
-// endpoint once one exists. Shape kept intentionally simple so it's
-// a drop-in swap for a fetch response.
+
 const ACHIEVEMENTS: Achievement[] = [
     { id: "first-win", label: "First solve", unlocked: true },
     { id: "no-errors", label: "Flawless run", unlocked: true },
@@ -30,6 +29,7 @@ const ACHIEVEMENTS: Achievement[] = [
 
 export default function ProfileTab() {
     const { username } = useUser();
+    const { isAuthenticated } = useAuth();
 
     return (
         <div className="w-full max-w-lg flex flex-col gap-6">
@@ -40,9 +40,14 @@ export default function ProfileTab() {
                 </div>
                 <div>
                     <div className="text-lg font-bold text-slate-100">{username ?? "Guest"}</div>
-                    <div className="text-xs text-slate-400 uppercase tracking-wider mt-0.5">Rank #12 global</div>
+                    <div className="text-xs text-slate-400 uppercase tracking-wider mt-0.5">
+                        {isAuthenticated ? "Rank #12 global" : "Playing as guest"}
+                    </div>
                 </div>
             </div>
+
+            {/* Only shows up for guests — vanishes entirely once authenticated */}
+            <GuestNudge message="Your stats only live on this device right now. Sign up to keep them across devices and appear on the permanent leaderboard." />
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3">
