@@ -1,6 +1,5 @@
 import { useSettings, type Difficulty } from "../context/SettingsContext";
 import { useTheme, type Theme } from "../context/ThemeContext";
-import { useUser } from "../context/UserContext";
 import { useAuth } from "../context/AuthContext";
 
 const DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard", "expert"];
@@ -14,8 +13,7 @@ const THEMES: { id: Theme; label: string; swatch: string }[] = [
 export default function SettingsDrawer() {
     const { difficulty, setDifficulty, isSettingsOpen, closeSettings } = useSettings();
     const { theme, setTheme } = useTheme();
-    const { openUsernameModal } = useUser();
-    const { isAuthenticated, user, openAuthModal, logout } = useAuth();
+    const { user, logout } = useAuth();
 
     if (!isSettingsOpen) return null;
 
@@ -101,59 +99,17 @@ export default function SettingsDrawer() {
                 <section>
                     <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">Account</h3>
 
-                    {isAuthenticated ? (
-                        <div className="flex flex-col gap-2">
-                            <p className="text-xs text-slate-500">Signed in as {user?.email}</p>
-                            <button
-                                onClick={() => {
-                                    closeSettings();
-                                    openUsernameModal();
-                                }}
-                                className="w-full py-3 rounded-xl bg-slate-900/60 border border-slate-700/50 text-sm font-semibold text-slate-300 hover:bg-slate-700/50 transition"
-                            >
-                                Change username
-                            </button>
-                            <button
-                                onClick={logout}
-                                className="w-full py-3 rounded-xl bg-slate-900/60 border border-slate-700/50 text-sm font-semibold text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/40 transition"
-                            >
-                                Log out
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col gap-2">
-                            <p className="text-xs text-slate-500 mb-1">
-                                You're playing as a guest. Sign in to sync your progress.
-                            </p>
-                            <button
-                                onClick={() => {
-                                    closeSettings();
-                                    openAuthModal("login");
-                                }}
-                                className="w-full py-3 rounded-xl bg-cyan-600/20 border border-cyan-500 text-sm font-semibold text-cyan-400 hover:bg-cyan-600/30 transition"
-                            >
-                                Sign in
-                            </button>
-                            <button
-                                onClick={() => {
-                                    closeSettings();
-                                    openAuthModal("register");
-                                }}
-                                className="w-full py-3 rounded-xl bg-slate-900/60 border border-slate-700/50 text-sm font-semibold text-slate-300 hover:bg-slate-700/50 transition"
-                            >
-                                Create account
-                            </button>
-                            <button
-                                onClick={() => {
-                                    closeSettings();
-                                    openUsernameModal();
-                                }}
-                                className="text-xs text-slate-500 hover:text-slate-300 text-center mt-1"
-                            >
-                                Just change guest username instead
-                            </button>
-                        </div>
-                    )}
+                    <div className="flex flex-col gap-2">
+                        {user && (
+                            <p className="text-xs text-slate-500">Logged in as <span className="font-bold text-slate-300">{user.username}</span></p>
+                        )}
+                        <button
+                            onClick={logout}
+                            className="w-full py-3 rounded-xl bg-slate-900/60 border border-slate-700/50 text-sm font-semibold text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/40 transition"
+                        >
+                            Log out
+                        </button>
+                    </div>
                 </section>
             </div>
         </div>

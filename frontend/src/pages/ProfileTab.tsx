@@ -1,6 +1,4 @@
-import { useUser } from "../context/UserContext";
 import { useAuth } from "../context/AuthContext";
-import GuestNudge from "../component/GuestNudge";
 
 function StatTile({ label, value }: { label: string; value: string }) {
     return (
@@ -28,8 +26,8 @@ const ACHIEVEMENTS: Achievement[] = [
 ];
 
 export default function ProfileTab() {
-    const { username } = useUser();
-    const { isAuthenticated } = useAuth();
+    const { user } = useAuth();
+    const username = user?.username ?? "Unknown";
 
     return (
         <div className="w-full max-w-lg flex flex-col gap-6">
@@ -39,15 +37,12 @@ export default function ProfileTab() {
                     {username ? username.charAt(0).toUpperCase() : "?"}
                 </div>
                 <div>
-                    <div className="text-lg font-bold text-slate-100">{username ?? "Guest"}</div>
+                    <div className="text-lg font-bold text-slate-100">{username}</div>
                     <div className="text-xs text-slate-400 uppercase tracking-wider mt-0.5">
-                        {isAuthenticated ? "Rank #12 global" : "Playing as guest"}
+                        Rank #12 global
                     </div>
                 </div>
             </div>
-
-            {/* Only shows up for guests — vanishes entirely once authenticated */}
-            <GuestNudge message="Your stats only live on this device right now. Sign up to keep them across devices and appear on the permanent leaderboard." />
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3">

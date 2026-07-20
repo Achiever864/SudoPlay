@@ -10,6 +10,7 @@ export const protect = async (req, res, next) => {
             token = req.headers.authorization.split(" ")[1];
         }
 
+        console.log("auth_token:", token);
         if (!token){
             return res.status(401).json({
                 success: false,
@@ -21,10 +22,11 @@ export const protect = async (req, res, next) => {
             token,
             process.env.JWT_SECRET
         );
-
+        console.log("Decoded:", decoded);
         const user = await User.findById(decoded.id)
             .select("-password");
 
+        console.log("User:", user)
         if (!user) {
             return res.status(404).json({
                 success: false,

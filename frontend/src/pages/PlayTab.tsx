@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSettings } from "../context/SettingsContext";
-import GuestNudge from "../component/GuestNudge";
 import API from "../api/axios";
 
 const MAX_ERRORS = 3;
@@ -92,11 +91,6 @@ export default function PlayTab() {
 
     useEffect(() => {
         fetchPuzzle();
-        // Re-fetches whenever difficulty changes in Settings. If you'd
-        // rather not interrupt an in-progress round, gate this behind a
-        // confirmation in SettingsDrawer instead of firing automatically.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        //ok
     }, [difficulty]);
 
     useEffect(() => {
@@ -138,8 +132,6 @@ export default function PlayTab() {
         const isCorrect = grid.every((cell, i) => cell === solution[i]);
         if (isCorrect) {
             setIsWon(true);
-            // Only submit on an actual correct solve — this used to fire
-            // unconditionally whenever the grid filled up, win or not.
             handleWin(elapsedSeconds, errorCount);
         }
     }, [grid, isWon, isGameOver, solution, handleWin, elapsedSeconds, errorCount]);
@@ -189,9 +181,6 @@ export default function PlayTab() {
                         </h2>
                         <p className="text-sm text-slate-400 mt-2">You completed the puzzle.</p>
 
-                        <div className="mt-4">
-                            <GuestNudge message="Create an account to save this win and show up on the leaderboard." />
-                        </div>
 
                         <button
                             onClick={handleReset}
